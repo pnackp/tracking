@@ -5,11 +5,15 @@ import com.tracking.tracksystems.database.trucks.Trucks;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface TruckAssignmentRepo extends JpaRepository<TruckAssignment, Long> {
-    List<?> findByDriver(User driver);
+    List<TruckAssignment> findByDriver(User driver);
     List<TruckAssignment> findByTruck(Trucks truck);
-    List<TruckAssignment> findByDriverAndEndDateIsNull(User driver);
+    Optional<TruckAssignment> findByDriverAndEndDateIsNull(User driver);
 
-    List<TruckAssignment> findByTruckAndEndDateIsNull(Trucks truck);
+    Optional<TruckAssignment> findByTruckAndEndDateIsNull(Trucks truck);
+
+    List<TruckAssignment> findAllByEndDateIsNull();
+
 }

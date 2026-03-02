@@ -56,7 +56,6 @@ public class CookieFilter extends OncePerRequestFilter {
         try {
             if (accessToken != null) {
                 String accessStatus = jwtService.validateToken(accessToken);
-                System.out.println("passed");
                 if ("VALID".equals(accessStatus)) {
 
                     String username = jwtService.extractUsername(accessToken);
@@ -64,7 +63,6 @@ public class CookieFilter extends OncePerRequestFilter {
 
                     setAuthentication(username, role);
                     filterChain.doFilter(request, response);
-                    System.out.println("passed1");
                     return;
                 }
 
@@ -83,10 +81,8 @@ public class CookieFilter extends OncePerRequestFilter {
 
                         setAuthentication(username, role);
                         filterChain.doFilter(request, response);
-                        System.out.println("passed3");
                         return;
                     }
-                    System.out.println("passed2");
                 }
             }
 
