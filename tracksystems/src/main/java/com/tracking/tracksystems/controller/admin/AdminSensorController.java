@@ -1,6 +1,5 @@
 package com.tracking.tracksystems.controller.admin;
 
-import com.tracking.tracksystems.database.sensor.Sensor;
 import com.tracking.tracksystems.dto.InterfaceManage;
 import com.tracking.tracksystems.service.SensorService;
 import jakarta.validation.Valid;

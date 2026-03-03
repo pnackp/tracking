@@ -1,15 +1,12 @@
 package com.tracking.tracksystems.controller.truck_manager;
 
-import com.tracking.tracksystems.database.trucks.Trucks;
 import com.tracking.tracksystems.dto.InterfaceManage;
 import com.tracking.tracksystems.service.AssignmentService;
+import com.tracking.tracksystems.service.LogsService;
 import com.tracking.tracksystems.service.TruckService;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/truckmanager")
@@ -17,10 +14,13 @@ public class TrucksController {
 
     private final TruckService truckService;
     private final AssignmentService  assignmentService;
+    private final LogsService logsService;
 
-    public TrucksController(TruckService truckService, AssignmentService assignmentService) {
+
+    public TrucksController(TruckService truckService, AssignmentService assignmentService, LogsService logsService) {
         this.truckService = truckService;
         this.assignmentService = assignmentService;
+        this.logsService = logsService;
     }
 
     @GetMapping("/trucks")
@@ -48,5 +48,15 @@ public class TrucksController {
     @GetMapping("/assignments/truck/{truck_id}")
     public ResponseEntity<?> getAssign(@PathVariable String truck_id){
         return ResponseEntity.ok(assignmentService.getAssignById(truck_id));
+    }
+
+    @GetMapping("/logs")
+    public ResponseEntity<?> getLogs() {
+        return ResponseEntity.ok(logsService.getAllLogs());
+    }
+
+    @GetMapping("/logs/trucks/{id}")
+    public ResponseEntity<?> getLogsById(@PathVariable String id) {
+        return ResponseEntity.ok(logsService.getById(id));
     }
 }

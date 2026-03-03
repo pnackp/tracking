@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
+import java.util.List;
+
 public class InterfaceManage {
     public record Login(
             @NotBlank(message = "Please specify your email OR employee_id")
@@ -101,4 +103,7 @@ public class InterfaceManage {
             String name
     ){}
 
+    public record SensorUpdate(String truckId , List<SensorReading> readings){}
+
+    public record SensorReading(String SensorName , double Value){}
 }

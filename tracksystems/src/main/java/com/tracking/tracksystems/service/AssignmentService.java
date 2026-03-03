@@ -7,11 +7,9 @@ import com.tracking.tracksystems.database.trucks.TrucksRepo;
 import com.tracking.tracksystems.database.users.User;
 import com.tracking.tracksystems.database.users.UsersRepo;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -35,11 +33,11 @@ public class AssignmentService {
         User user = usersRepo.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND , "User not found"));
         Trucks truck = trucksRepo.findById(TruckId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND , "Truck not found"));
 
-        if (!truckAssignmentRepo.findByDriverAndEndDateIsNull(user).isEmpty()) {
+        if (truckAssignmentRepo.findByDriverAndEndDateIsNull(user).isPresent()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Driver already assigned to another truck");
         }
 
-        if (!truckAssignmentRepo.findByTruckAndEndDateIsNull(truck).isEmpty()) {
+        if (truckAssignmentRepo.findByTruckAndEndDateIsNull(truck).isPresent()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Truck already assigned to another driver");
         }
 
@@ -65,7 +63,6 @@ public class AssignmentService {
         TruckAssignment result = truckAssignmentRepo.findByDriverAndEndDateIsNull(user).orElseThrow(()->  new ResponseStatusException(HttpStatus.NOT_FOUND,"Assign not found"));
         result.setEndDate(LocalDateTime.now());
         truckAssignmentRepo.save(result);
-        return;
     }
 
     public List<TruckAssignment> getAllMyAssign(String id){
