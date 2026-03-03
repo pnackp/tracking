@@ -4,8 +4,6 @@ import com.tracking.tracksystems.database.users.User;
 import com.tracking.tracksystems.database.users.UsersRepo;
 import com.tracking.tracksystems.dto.InterfaceManage;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -46,7 +44,6 @@ public class UserService {
         }
         user.setPassword(encoder.encode(request.newPassword()));
         usersRepo.save(user);
-        return;
     }
 
     public void putEmployee(InterfaceManage.UserUpdateRequest updatedEmployee , String id){
@@ -54,6 +51,5 @@ public class UserService {
         user.setEmail(updatedEmployee.email());
         user.setPhone(updatedEmployee.phone());
         usersRepo.save(user);
-        return;
     }
 }

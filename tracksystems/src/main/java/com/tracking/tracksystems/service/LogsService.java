@@ -2,7 +2,6 @@ package com.tracking.tracksystems.service;
 
 import com.tracking.tracksystems.database.logs.Logs;
 import com.tracking.tracksystems.database.logs.LogsRepo;
-import com.tracking.tracksystems.database.sensor.SensorRepo;
 import com.tracking.tracksystems.database.trucks.TrucksRepo;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;

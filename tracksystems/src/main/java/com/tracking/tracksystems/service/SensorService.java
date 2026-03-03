@@ -24,6 +24,5 @@ public class SensorService {
     public void postSensor(String name){
         sensorRepo.findBySensorName(name).orElseThrow(()-> new ResponseStatusException(HttpStatus.CONFLICT , "Sensor Not Found"));
         sensorRepo.save(new Sensor(name));
-        return;
     }
 }

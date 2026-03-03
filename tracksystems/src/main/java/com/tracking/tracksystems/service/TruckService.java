@@ -32,7 +32,6 @@ public class TruckService {
         }
         Trucks newTruck = new Trucks(payload.truck_id() , payload.plate_number(), payload.product(), payload.fuel(), payload.weight_trucks());
         trucksRepo.save(newTruck);
-        return;
     }
 
     public void updateTruck(String id,InterfaceManage.TruckUpdate payload){
@@ -41,6 +40,5 @@ public class TruckService {
         truck.setFuel(payload.fuel());
         truck.setProduct(payload.product());
         trucksRepo.save(truck);
-        return;
     }
 }

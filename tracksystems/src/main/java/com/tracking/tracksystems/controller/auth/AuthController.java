@@ -8,10 +8,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -42,5 +39,13 @@ public class AuthController {
         authService.register(payload);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new InterfaceManage.response("registered successful"));
+    }
+
+    @GetMapping("/logout")
+    public ResponseEntity<?> logout() {
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, cookieService.clearAccessCookie().toString())
+                .header(HttpHeaders.SET_COOKIE, cookieService.clearRefreshCookie().toString())
+                .body("Logout");
     }
 }
