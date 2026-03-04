@@ -1,11 +1,42 @@
 <body class="h-screen w-screen m-0 bg-gray-50">
 
     <main class="flex items-center justify-center w-full h-full px-4">
+        @if (showMsg()) {
+        <div [ngClass]="{
+    'toast-in': !isClosing,
+    'toast-out': isClosing
+  }" class="fixed top-6 right-6 bg-white/90 backdrop-blur-sm
+  flex space-x-3 p-4 text-sm rounded-lg
+  border border-red-200 shadow-xl">
 
-        <form class="flex w-full max-w-md flex-col lg:bg-white  p-10 rounded-xl shadow-none lg:shadow-lg">
+            <!-- Icon -->
+            <svg width="20" height="18" fill="none" viewBox="0 0 24 24">
+                <path
+                    d="M12 9v4m0 4h.01M4.93 19h14.14c1.54 0 2.5-1.67 1.73-3L13.73 4c-.77-1.33-2.69-1.33-3.46 0L3.2 16c-.77 1.33.19 3 1.73 3z"
+                    stroke="#DC2626" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+
+            <div>
+                <h3 class="text-red-600 font-medium">Login Failed</h3>
+                <p class="text-red-500">
+                    {{showMsg()}}
+                </p>
+            </div>
+
+            <button type="button" (click)="CloseError()"
+                class="cursor-pointer text-red-400 hover:text-red-600 transition">
+                ✕
+            </button>
+
+        </div>
+        }
+
+
+        <form class="flex w-full max-w-md flex-col lg:bg-white  p-10 rounded-xl shadow-none lg:shadow-lg"
+            [formGroup]="form">
 
             <a href="/" class="mb-10 flex items-center ">
-                <img src="whaleicon.png" alt="Logo" class="w-22 h-22 object-contain drop-shadow-md"/>
+                <img src="whaleicon.png" alt="Logo" class="w-22 h-22 object-contain drop-shadow-md" />
             </a>
 
             <h2 class="text-4xl font-semibold text-gray-900">Sign in</h2>
@@ -15,28 +46,32 @@
             </p>
 
             <div class="mt-4">
-                <label class="font-medium text-gray-700">Email</label>
-                <input type="email" name="email" required placeholder="Please enter your email"
+                <label class="font-medium text-gray-700">Email or EmployeeID</label>
+                <input type="text" name="text" required placeholder="Please enter your email" required
+                    formControlName="identify"
                     class="mt-2 w-full rounded-md border border-gray-300 px-4 py-3 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600 outline-none transition" />
             </div>
 
             <div class="mt-6">
                 <label class="font-medium text-gray-700">Password</label>
-                <input type="password" name="password" required placeholder="Please enter your password"
+                <input type="password" name="password" required placeholder="Please enter your password" required
+                    formControlName="password"
                     class="mt-2 w-full rounded-md border border-gray-300 px-4 py-3 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600 outline-none transition" />
             </div>
 
-            <button type="submit"
+            <button (click)="Onclick()"
                 class="mt-8 w-full rounded-md bg-indigo-600 py-3 text-white font-medium transition hover:bg-indigo-700 active:scale-[0.99]">
                 Login
             </button>
 
             <p class="text-center pt-8 text-gray-500">
                 Don't have an account?
-                <a href="/signup" class="text-indigo-600 hover:underline">Sign up</a>
+                <a href="/register" class="text-indigo-600 hover:underline">Sign up</a>
             </p>
 
         </form>
+
+
 
     </main>
 

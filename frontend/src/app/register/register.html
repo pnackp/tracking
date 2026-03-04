@@ -1,113 +1,135 @@
-<body class="min-h-screen bg-gray-50">
-    <main class="min-h-screen flex items-center justify-center p-3 sm:p-4">
-        <div
-            class="w-full max-w-6xl grid lg:grid-cols-2 bg-white lg:shadow-xl rounded-xl sm:rounded-2xl overflow-hidden">
+<main class="min-h-screen flex items-center justify-center p-3 sm:p-4">
 
-            <!-- Left: Register Form -->
-            <section class="px-4 py-6 sm:px-6 sm:py-10 lg:px-12 lg:py-14">
+    @if (showMsg()) {
+    <div [ngClass]="{'toast-in': !isClosing,'toast-out': isClosing}" class="fixed lg:top-6 top-8 lg:right-6 right-2 bg-white/90 backdrop-blur-sm flex space-x-3 p-2 lg:p-4 text-sm rounded-lg
+  border border-red-200 shadow-xl">
+
+        <!-- Icon -->
+        <svg class="hidden lg:block" width="20" height="18" fill="none" viewBox="0 0 24 24">
+            <path
+                d="M12 9v4m0 4h.01M4.93 19h14.14c1.54 0 2.5-1.67 1.73-3L13.73 4c-.77-1.33-2.69-1.33-3.46 0L3.2 16c-.77 1.33.19 3 1.73 3z"
+                stroke="#DC2626" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+
+        <div>
+            <h3 class="text-red-600 font-medium">Register Failed</h3>
+            <p class="text-red-500">
+                {{showMsg()}}
+            </p>
+        </div>
+
+        <button type="button" (click)="CloseError()" class="cursor-pointer text-red-400 hover:text-red-600 transition">
+            ✕
+        </button>
+
+    </div>
+    }
+
+    <div class="w-full max-w-6xl grid lg:grid-cols-2 bg-white lg:shadow-xl rounded-xl sm:rounded-2xl overflow-hidden">
+
+        <!-- Left: Register Form -->
+        <section class="px-4 py-6 sm:px-6 sm:py-10 lg:px-12 lg:py-14">
 
 
-                <a href="/" class="hidden sm:inline-flex mb-6 items-center gap-3">
-                    <img src="whaleicon.png" alt="Logo"
-                        class="w-14 h-14 sm:w-14 sm:h-14 object-contain drop-shadow-md" />
-                </a>
+            <a href="/" class="hidden sm:inline-flex mb-6 items-center gap-3">
+                <img src="whaleicon.png" alt="Logo" class="w-14 h-14 sm:w-14 sm:h-14 object-contain drop-shadow-md" />
+            </a>
 
-                <h2 class="text-2xl sm:text-3xl lg:text-4xl font-semibold text-gray-900">
-                    Create Account
-                </h2>
+            <h2 class="text-2xl sm:text-3xl lg:text-4xl font-semibold text-gray-900">
+                Create Account
+            </h2>
 
-                <p class="hidden lg:block mt-3 text-gray-500 text-sm lg:text-base">
-                    Fill in your information to register a new account.
-                </p>
+            <p class="hidden lg:block mt-3 text-gray-500 text-sm lg:text-base">
+                Fill in your information to register a new account.
+            </p>
 
-                <form class="mt-4 space-y-3 sm:space-y-5">
+            <form class="mt-4 space-y-3 sm:space-y-5" [formGroup]="register">
 
-                    <!-- Employee ID -->
+                <!-- Employee ID -->
+                <div>
+                    <label class="text-sm font-medium text-gray-700">Employee ID</label>
+                    <input type="text" placeholder="Enter employee number ID" formControlName="employee_id"
+                        class="mt-1.5 w-full rounded-lg border border-gray-300 px-3 py-2.5 sm:px-4 sm:py-3 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600 outline-none transition" />
+                </div>
+
+                <!-- Username + Full Name -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     <div>
-                        <label class="text-sm font-medium text-gray-700">Employee ID</label>
-                        <input type="text" placeholder="Enter employee ID"
+                        <label class="text-sm font-medium text-gray-700">Username</label>
+                        <input type="text" placeholder="Username" formControlName="first_name"
                             class="mt-1.5 w-full rounded-lg border border-gray-300 px-3 py-2.5 sm:px-4 sm:py-3 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600 outline-none transition" />
                     </div>
 
-                    <!-- Username + Full Name -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                        <div>
-                            <label class="text-sm font-medium text-gray-700">Username</label>
-                            <input type="text" placeholder="Username"
-                                class="mt-1.5 w-full rounded-lg border border-gray-300 px-3 py-2.5 sm:px-4 sm:py-3 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600 outline-none transition" />
-                        </div>
-
-                        <div>
-                            <label class="text-sm font-medium text-gray-700">Full Name</label>
-                            <input type="text" placeholder="First Last"
-                                class="mt-1.5 w-full rounded-lg border border-gray-300 px-3 py-2.5 sm:px-4 sm:py-3 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600 outline-none transition" />
-                        </div>
+                    <div>
+                        <label class="text-sm font-medium text-gray-700">Full Name</label>
+                        <input type="text" placeholder="First Last" formControlName="last_name"
+                            class="mt-1.5 w-full rounded-lg border border-gray-300 px-3 py-2.5 sm:px-4 sm:py-3 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600 outline-none transition" />
                     </div>
-
-                    <!-- Phone + Email -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                        <div>
-                            <label class="text-sm font-medium text-gray-700">Phone Number</label>
-                            <input type="text" placeholder="+66 8 1234 5678"
-                                class="mt-1.5 w-full rounded-lg border border-gray-300 px-3 py-2.5 sm:px-4 sm:py-3 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600 outline-none transition" />
-                        </div>
-
-                        <div>
-                            <label class="text-sm font-medium text-gray-700">Email</label>
-                            <input type="email" placeholder="you@example.com"
-                                class="mt-1.5 w-full rounded-lg border border-gray-300 px-3 py-2.5 sm:px-4 sm:py-3 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600 outline-none transition" />
-                        </div>
-                    </div>
-
-                    <!-- Password + Confirm Password -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                        <div>
-                            <label class="text-sm font-medium text-gray-700">Password</label>
-                            <input type="password" placeholder="Enter password"
-                                class="mt-1.5 w-full rounded-lg border border-gray-300 px-3 py-2.5 sm:px-4 sm:py-3 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600 outline-none transition" />
-                        </div>
-
-                        <div>
-                            <label class="text-sm font-medium text-gray-700">Confirm Password</label>
-                            <input type="password" placeholder="Repeat password"
-                                class="mt-1.5 w-full rounded-lg border border-gray-300 px-3 py-2.5 sm:px-4 sm:py-3 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600 outline-none transition" />
-                        </div>
-                    </div>
-
-                    <!-- Submit Button -->
-                    <button type="submit"
-                        class="w-full mt-3 rounded-lg bg-indigo-600 py-2.5 sm:py-3 text-white font-medium transition hover:bg-indigo-700 active:scale-[0.98]">
-                        Register
-                    </button>
-
-                    <p class="text-center text-sm text-gray-500 pt-1">
-                        Already have an account?
-                        <a href="/signin" class="text-indigo-600 hover:underline">Sign in</a>
-                    </p>
-
-                </form>
-            </section>
-
-            <!-- Right Side Decorative Panel (Desktop Only) -->
-            <aside class="hidden lg:flex flex-col justify-center items-center text-white p-12 relative overflow-hidden">
-
-                <!-- Background Image -->
-                <img src="whale.jpg" class="absolute inset-0 w-full h-full object-cover z-0" alt="Background" />
-
-                <!-- Gradient Overlay (ลดความทึบลงเยอะ) -->
-                <div class="absolute inset-0 bg-gradient-to-br from-indigo-600/60 to-indigo-500/40 z-10"></div>
-
-                <!-- Content -->
-                <div class="relative z-20 max-w-sm text-center">
-                    <h3 class="text-3xl font-semibold">Join Our System</h3>
-                    <p class="mt-4 text-lg opacity-90 leading-relaxed">
-                        Register with your employee credentials to access internal tools and company resources.
-                        Make sure all information is accurate before submitting.
-                    </p>
                 </div>
 
-            </aside>
+                <!-- Phone + Email -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                    <div>
+                        <label class="text-sm font-medium text-gray-700">Phone Number</label>
+                        <input type="text" placeholder="+66 8 1234 5678" formControlName="phone_number"
+                            class="mt-1.5 w-full rounded-lg border border-gray-300 px-3 py-2.5 sm:px-4 sm:py-3 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600 outline-none transition" />
+                    </div>
 
-        </div>
-    </main>
-</body>
+                    <div>
+                        <label class="text-sm font-medium text-gray-700">Email</label>
+                        <input type="email" placeholder="you@example.com" formControlName="email"
+                            class="mt-1.5 w-full rounded-lg border border-gray-300 px-3 py-2.5 sm:px-4 sm:py-3 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600 outline-none transition" />
+                    </div>
+                </div>
+
+                <!-- Password + Confirm Password -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                    <div>
+                        <label class="text-sm font-medium text-gray-700">Password</label>
+                        <input type="password" placeholder="Enter password" formControlName="password"
+                            class="mt-1.5 w-full rounded-lg border border-gray-300 px-3 py-2.5 sm:px-4 sm:py-3 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600 outline-none transition" />
+                    </div>
+
+                    <div>
+                        <label class="text-sm font-medium text-gray-700">Confirm Password</label>
+                        <input type="password" placeholder="Repeat password" formControlName="confirmPassword"
+                            class="mt-1.5 w-full rounded-lg border border-gray-300 px-3 py-2.5 sm:px-4 sm:py-3 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600 outline-none transition" />
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button (click)="onSubmit()"
+                    class="w-full mt-3 rounded-lg bg-indigo-600 py-2.5 sm:py-3 text-white font-medium transition hover:bg-indigo-700 active:scale-[0.98]">
+                    Register
+                </button>
+
+                <p class="text-center text-sm text-gray-500 pt-1">
+                    Already have an account?
+                    <a href="/login" class="text-indigo-600 hover:underline">Sign in</a>
+                </p>
+
+            </form>
+        </section>
+
+        <!-- Right Side Decorative Panel (Desktop Only) -->
+        <aside class="hidden lg:flex flex-col justify-center items-center text-white p-12 relative overflow-hidden">
+
+            <!-- Background Image -->
+            <img src="whale.jpg" class="absolute inset-0 w-full h-full object-cover z-0" alt="Background" />
+
+            <!-- Gradient Overlay (ลดความทึบลงเยอะ) -->
+            <div class="absolute inset-0 bg-linear-to-br from-indigo-600/60 to-indigo-500/40 z-10"></div>
+
+            <!-- Content -->
+            <div class="relative z-20 max-w-sm text-center">
+                <h3 class="text-3xl font-semibold">Join Our System</h3>
+                <p class="mt-4 text-lg opacity-90 leading-relaxed">
+                    Register with your employee credentials to access internal tools and company resources.
+                    Make sure all information is accurate before submitting.
+                </p>
+            </div>
+
+        </aside>
+
+    </div>
+</main>

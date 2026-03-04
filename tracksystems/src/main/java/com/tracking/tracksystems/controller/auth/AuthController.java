@@ -31,7 +31,7 @@ public class AuthController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, cookieService.createAccessCookie(user.getEmployeeId(), user.getRole()).toString())
                 .header(HttpHeaders.SET_COOKIE, cookieService.createRefreshCookie(user.getEmployeeId(), user.getRole()).toString())
-                .body(new InterfaceManage.LoginResponse(user.getFirstName(), user.getLastName(), user.getPhone(), user.getRole()));
+                .body(new InterfaceManage.LoginResponse(user.getFirstName(), user.getLastName(), user.getPhone(), user.getRole() , user.getEmail()));
     }
 
     @PostMapping("/register")

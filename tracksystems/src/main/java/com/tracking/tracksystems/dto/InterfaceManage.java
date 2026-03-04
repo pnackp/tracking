@@ -21,7 +21,8 @@ public class InterfaceManage {
             String first_name ,
             String last_name ,
             String phone ,
-            String role
+            String role ,
+            String email
     ){}
 
     public record Register(

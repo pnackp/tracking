@@ -1,0 +1,35 @@
+@keyframes toastIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-30px) translateX(30px) scale(0.95);
+    filter: blur(4px);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(4px) translateX(-4px) scale(1.02);
+    filter: blur(0);
+  }
+  100% {
+    transform: translateY(0) translateX(0) scale(1);
+  }
+}
+
+@keyframes toastOut {
+  0% {
+    opacity: 1;
+    transform: translateY(0) translateX(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-20px) translateX(20px) scale(0.92);
+    filter: blur(3px);
+  }
+}
+
+.toast-in {
+  animation: toastIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.toast-out {
+  animation: toastOut 0.25s cubic-bezier(0.4, 0, 1, 1) forwards;
+}

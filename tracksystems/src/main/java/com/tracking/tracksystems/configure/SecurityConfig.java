@@ -32,6 +32,7 @@ public class SecurityConfig {
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
+                .cors(cors -> {})
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/employees/**").hasAnyRole("ADMIN","USER")
                         .requestMatchers("/api/driver/**").hasAnyRole("ADMIN")
