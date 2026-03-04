@@ -101,7 +101,8 @@ public class InterfaceManage {
 
     public record Sensor(
             @NotBlank(message = "Missing sensor name")
-            String name
+            String name,
+            Boolean active
     ){}
 
     public record SensorUpdate(String truckId , List<SensorReading> readings){}

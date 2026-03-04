@@ -11,3 +11,8 @@ export interface RegisterRequest {
   email: string;
   password: string;
 }
+
+export interface SensorRequest{
+  name : string,
+  active : boolean
+}

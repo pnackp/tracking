@@ -21,8 +21,10 @@ public class SensorService {
         return sensorRepo.findAll();
     }
 
-    public void postSensor(String name){
-        sensorRepo.findBySensorName(name).orElseThrow(()-> new ResponseStatusException(HttpStatus.CONFLICT , "Sensor Not Found"));
-        sensorRepo.save(new Sensor(name));
+    public void postSensor(String name , Boolean active){
+        if(sensorRepo.findBySensorName(name).isPresent()){
+            throw new ResponseStatusException(HttpStatus.CONFLICT , "Sensor Already Exists");
+        }
+        sensorRepo.save(new Sensor(name , active));
     }
 }

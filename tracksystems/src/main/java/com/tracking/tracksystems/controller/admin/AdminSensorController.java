@@ -24,7 +24,7 @@ public class AdminSensorController {
 
     @PostMapping("/sensor")
     public ResponseEntity<?> postSensors(@Valid @RequestBody InterfaceManage.Sensor sensor){
-        sensorService.postSensor(sensor.name());
+        sensorService.postSensor(sensor.name() , sensor.active());
         return ResponseEntity.status(HttpStatus.CREATED).body("Created Sensor");
     }
 }

@@ -1,10 +1,13 @@
 import { Component, signal } from '@angular/core';
 import { ApiComponent } from '../../api.component';
-import { Router } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-aside',
-  imports: [],
+  imports: [
+    RouterLink,
+    RouterLinkActive
+  ],
   standalone: true,
   templateUrl: './aside.html',
   styleUrl: './aside.css',

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { LoginPayload, RegisterRequest } from './app.dto';
+import { LoginPayload, RegisterRequest, SensorRequest } from './app.dto';
 
 @Injectable({ providedIn: 'root' })
 export class ApiComponent {
@@ -16,5 +16,13 @@ export class ApiComponent {
 
     LogoutRequest(){
         return this.http.get("http://localhost:8080/api/auth/logout",{withCredentials : true , responseType: 'text'});
+    }
+
+    GetSensor(){
+        return this.http.get("http://localhost:8080/api/admin/sensor" , {withCredentials : true });
+    }
+
+    PostSensor(payload : SensorRequest){
+        return this.http.post("http://localhost:8080/api/admin/sensor", payload , {withCredentials : true , responseType: 'text' });
     }
 }
