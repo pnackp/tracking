@@ -38,7 +38,7 @@ public class AuthController {
     public ResponseEntity<?> register(@Valid @RequestBody InterfaceManage.Register payload) {
         authService.register(payload);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(new InterfaceManage.response("registered successful"));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new InterfaceManage.response("registered successful , Pls verify email"));
     }
 
     @GetMapping("/logout")
@@ -47,5 +47,11 @@ public class AuthController {
                 .header(HttpHeaders.SET_COOKIE, cookieService.clearAccessCookie().toString())
                 .header(HttpHeaders.SET_COOKIE, cookieService.clearRefreshCookie().toString())
                 .body("Logout");
+    }
+
+    @GetMapping("/verify")
+    public ResponseEntity<?> verifyToken(@RequestParam("token") String token) {
+        authService.verifyEmail(token);
+        return ResponseEntity.ok("Token received: " + token);
     }
 }

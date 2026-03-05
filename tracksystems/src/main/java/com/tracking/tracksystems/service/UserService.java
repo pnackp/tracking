@@ -52,4 +52,9 @@ public class UserService {
         user.setPhone(updatedEmployee.phone());
         usersRepo.save(user);
     }
+
+    public void deleteEmployee(String id){
+        User user = usersRepo.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        usersRepo.delete(user);
+    }
 }

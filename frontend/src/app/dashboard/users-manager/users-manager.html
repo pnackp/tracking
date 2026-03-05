@@ -1,0 +1,363 @@
+<div class="flex-1 pt-11 px-4 lg:p-8 min-h-screen">
+    <!-- Header -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-semibold text-gray-800 tracking-tight">
+            User Management
+        </h1>
+        <p class="text-sm text-gray-500 mt-2">
+            Manage system users and permissions
+        </p>
+        <div class="mt-6 bg-white/80 backdrop-blur-xl rounded-2xl shadow-md border border-blue-100 p-5">
+
+            <form [formGroup]="searchForm" (ngSubmit)="OnSearch()">
+                <div class="flex flex-col lg:flex-row gap-4 lg:items-end">
+
+                    <!-- Search -->
+                    <div class="flex-1">
+                        <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                            Search
+                        </label>
+                        <input type="text" placeholder="Search by name or ID..." formControlName="findBy"
+                            class="mt-1 w-full px-4 py-2.5 text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-200 focus:border-blue-400 outline-none transition">
+                    </div>
+
+                    <!-- Role Filter -->
+                    <div class="w-full sm:w-48">
+                        <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                            Role
+                        </label>
+                        <select formControlName="Role"
+                            class="mt-1 w-full px-4 py-2.5 text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-200 focus:border-blue-400 outline-none transition bg-white">
+                            <option value="">All Roles</option>
+                            <option value="admin">Admin</option>
+                            <option value="user">User</option>
+                            <option value="driver">Driver</option>
+                            <option value="driver_manager">Driver Manager</option>
+                        </select>
+                    </div>
+
+                    <!-- Status Filter -->
+                    <div class="w-full sm:w-48">
+                        <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                            Status
+                        </label>
+                        <select formControlName="Status"
+                            class="mt-1 w-full px-4 py-2.5 text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-200 focus:border-blue-400 outline-none transition bg-white">
+                            <option value="">All Status</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+
+                    <!-- Filter Button -->
+                    <div class="flex gap-3">
+                        <button
+                            class="px-6 py-2.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition shadow-sm">
+                            Apply
+                        </button>
+
+                        <button type="button"
+                            class="px-6 py-2.5 text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-xl transition shadow-sm"
+                            (click)="OnReset()">
+                            Reset
+                        </button>
+                    </div>
+
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <!-- Desktop Table -->
+    <div
+        class="hidden md:block bg-white/80 backdrop-blur-xl rounded-3xl shadow-lg border border-blue-100 overflow-hidden">
+
+        <div class="overflow-x-auto">
+            <table class="min-w-full text-sm text-gray-700">
+                <thead class="bg-linear-to-r from-blue-50 to-blue-100 text-xs uppercase text-blue-700 tracking-wider">
+                    <tr class="text-center">
+                        <th class="px-6 py-5">Employee ID</th>
+                        <th class="px-6 py-5">First Name</th>
+                        <th class="px-6 py-5">Last Name</th>
+                        <th class="px-6 py-5">Active</th>
+                        <th class="px-6 py-5">Email Verified</th>
+                        <th class="px-6 py-5">Role</th>
+                        <th class="px-6 py-5">Created At</th>
+                        <th class="px-6 py-5">Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody class="divide-y divide-gray-100 bg-white text-center">
+
+                    @for (emp of ListEmployee(); track emp.employeeId) {
+                    <tr class="hover:bg-blue-50/60 transition duration-200">
+
+                        <td class="px-6 py-5 font-medium text-gray-900">
+                            {{ emp.employeeId }}
+                        </td>
+
+                        <td class="px-6 py-5">{{ emp.firstName }}</td>
+                        <td class="px-6 py-5">{{ emp.lastName }}</td>
+
+                        <!-- Active -->
+                        <td class="px-6 py-5">
+                            @if (emp.isActive) {
+                            <span
+                                class="px-3 py-1.5 text-xs font-semibold text-green-700 bg-green-100 rounded-full shadow-sm">
+                                ● Active
+                            </span>
+                            } @else {
+                            <span
+                                class="px-3 py-1.5 text-xs font-semibold text-red-700 bg-red-100 rounded-full shadow-sm">
+                                ● Inactive
+                            </span>
+                            }
+                        </td>
+
+                        <!-- Email Verified -->
+                        <td class="px-6 py-5">
+                            @if (emp.emailVerify) {
+                            <span
+                                class="px-3 py-1.5 text-xs font-semibold text-emerald-700 bg-emerald-100 rounded-full shadow-sm">
+                                ✔ Verified
+                            </span>
+                            } @else {
+                            <span
+                                class="px-3 py-1.5 text-xs font-semibold text-gray-600 bg-gray-100 rounded-full shadow-sm">
+                                ✖ Not Verified
+                            </span>
+                            }
+                        </td>
+
+                        <!-- Role -->
+                        <td class="px-6 py-5">
+                            <span class="px-3 py-1.5 text-xs font-semibold rounded-full shadow-sm" [ngClass]="{
+                        'text-blue-700 bg-blue-100': emp.role === 'admin',
+                        'text-gray-700 bg-gray-100': emp.role === 'user'
+                    }">
+                                {{ emp.role | titlecase }}
+                            </span>
+                        </td>
+
+                        <td class="px-6 py-5 text-gray-500">
+                            {{ emp.createdAt | date:'yyyy-MM-dd HH:mm' }}
+                        </td>
+
+                        <td class="px-6 py-5">
+                            <div class="flex items-center justify-center gap-2">
+                                <button
+                                    class="px-4 py-1.5 text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition shadow-sm"
+                                    (click)="OnEdit(emp)">
+                                    Edit
+                                </button>
+
+                                <button (click)="OnDelete(emp)"
+                                    class="px-4 py-1.5 text-xs font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition shadow-sm">
+                                    Delete
+                                </button>
+                            </div>
+                        </td>
+
+                    </tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    
+    <!-- Mobile Cards -->
+    <div class="md:hidden space-y-5">
+@for (emp of ListEmployee(); track emp.employeeId) {
+        <div
+            class="bg-white/90 backdrop-blur-xl rounded-3xl shadow-lg border border-blue-100 p-5 transition hover:shadow-xl">
+
+            <div class="flex justify-between items-start">
+                <div>
+                    <p class="text-base font-semibold text-gray-900">
+                        {{ emp.firstName }} {{ emp.lastName }}
+                    </p>
+                    <p class="text-xs text-gray-400 mt-1">
+                        ID: {{ emp.employeeId }}
+                    </p>
+                </div>
+
+                <span class="px-3 py-1.5 text-xs font-semibold text-blue-700 bg-blue-100 rounded-full shadow-sm">
+                    {{ emp.role | titlecase }}
+                </span>
+            </div>
+
+            <!-- Status -->
+            <div class="mt-4 flex flex-wrap items-center gap-2">
+
+                @if (emp.isActive) {
+                <span class="px-3 py-1.5 text-xs font-semibold text-green-700 bg-green-100 rounded-full shadow-sm">
+                    ● Active
+                </span>
+                } @else {
+                <span class="px-3 py-1.5 text-xs font-semibold text-red-700 bg-red-100 rounded-full shadow-sm">
+                    ● Inactive
+                </span>
+                }
+
+                @if (emp.emailVerify) {
+                <span class="px-3 py-1.5 text-xs font-semibold text-emerald-700 bg-emerald-100 rounded-full shadow-sm">
+                    ✔ Verified
+                </span>
+                } @else {
+                <span class="px-3 py-1.5 text-xs font-semibold text-gray-600 bg-gray-100 rounded-full shadow-sm">
+                    ✖ Not Verified
+                </span>
+                }
+
+                <span class="text-xs text-gray-400 ml-auto">
+                    {{ emp.createdAt | date:'yyyy-MM-dd HH:mm' }}
+                </span>
+            </div>
+
+            <div class="mt-5 flex gap-3">
+                <button
+                    class="flex-1 text-blue-600 bg-blue-50 hover:bg-blue-100 text-sm py-2 rounded-xl transition shadow-sm"
+                    (click)="OnEdit(emp)">
+                    Edit
+                </button>
+                <button
+                    class="flex-1 text-red-600 bg-red-50 hover:bg-red-100 text-sm py-2 rounded-xl transition shadow-sm" (click)="OnDelete(emp)">
+                    Delete
+                </button>
+            </div>
+
+        </div>
+        }
+    </div>
+    
+</div>
+
+
+@if(isEdit()){
+<div class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+
+    <!-- Modal -->
+    <div class="w-full max-w-lg bg-white rounded-3xl shadow-xl p-6 animate-fadeIn">
+
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-xl font-semibold text-gray-800">Edit {{selectedUser()?.firstName}} account</h2>
+            <button class="text-gray-400 hover:text-gray-600 text-xl leading-none" (click)="CloseEdit()">
+                ✕
+            </button>
+        </div>
+
+        <!-- Form -->
+        <form [formGroup]="editForm">
+            <div class="space-y-5">
+
+                <!-- Role -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-600 mb-1">
+                        Role
+                    </label>
+                    <div class="relative">
+                        <select class="w-full appearance-none px-4 py-2.5 rounded-xl border border-gray-200
+                                   bg-linear-to-br from-white to-blue-50
+                                   focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                                   text-gray-700 shadow-sm transition" formControlName="role">
+
+                            <option class="text-gray-700" value="admin">Admin</option>
+                            <option class="text-gray-700" value="user">User</option>
+                            <option class="text-gray-700" value="driver">Driver</option>
+                            <option class="text-gray-700" value="driver_manager">Driver Manager</option>
+                        </select>
+
+                        <!-- custom arrow -->
+                        <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-400">
+                            ▼
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Status -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-600 mb-1">
+                        User Status
+                    </label>
+                    <div class="relative">
+                        <select class="w-full appearance-none px-4 py-2.5 rounded-xl border border-gray-200
+                                   bg-linear-to-br from-white to-blue-50
+                                   focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                                   text-gray-700 shadow-sm transition" formControlName="isActive">
+
+                            <option class="text-green-600" [ngValue]="true">Active</option>
+                            <option class="text-red-500" [ngValue]="false">Inactive</option>
+                        </select>
+
+                        <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-400">
+                            ▼
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Buttons -->
+            <div class="mt-8 flex flex-col sm:flex-row gap-3 sm:justify-between">
+
+                <div class="flex flex-col sm:flex-row gap-3 sm:ml-auto w-full sm:w-auto">
+
+                    <button type="button" class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-blue-600 text-white
+                               hover:bg-blue-700 active:scale-95 transition shadow-sm" (click)="OnSave()">
+                        Save Changes
+                    </button>
+                </div>
+
+            </div>
+        </form>
+
+    </div>
+</div>
+}
+
+@if(onDelete()){
+<div class="fixed inset-0 bg-black/40 backdrop-blur-sm 
+            flex items-center justify-center z-50
+            animate-fadeIn">
+
+    <div class="flex flex-col items-center bg-white shadow-lg 
+              rounded-2xl py-6 px-5 w-95
+              border border-gray-200
+              animate-scaleIn">
+
+        <div class="flex items-center justify-center p-4 bg-red-100 rounded-full">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                    d="M2.875 5.75h1.917m0 0h15.333m-15.333 0v13.417a1.917 1.917 0 0 0 1.916 1.916h9.584a1.917 1.917 0 0 0 1.916-1.916V5.75m-10.541 0V3.833a1.917 1.917 0 0 1 1.916-1.916h3.834a1.917 1.917 0 0 1 1.916 1.916V5.75m-5.75 4.792v5.75m3.834-5.75v5.75"
+                    stroke="#DC2626" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+        </div>
+
+        <h2 class="text-gray-900 font-semibold mt-4 text-xl">
+            Delete {{selectedUser()?.firstName}}
+        </h2>
+
+        <p class="text-sm text-gray-600 mt-2 text-center">
+            Are you sure to delete this account , It's would be effect to company.
+        </p>
+
+        <div class="flex items-center justify-center gap-4 mt-5 w-full">
+            <button type="button" class="w-full h-10 rounded-md border border-gray-300 bg-white
+                   text-gray-600 font-medium text-sm
+                   hover:bg-gray-100 active:scale-95 transition" (click)="CloseDelete()">
+                Cancel
+            </button>
+
+            <button type="button" class="w-full h-10 rounded-md text-white bg-red-600
+                   font-medium text-sm
+                   hover:bg-red-700 active:scale-95 transition" (click)="ConfirmDelete()">
+                Confirm
+            </button>
+        </div>
+    </div>
+</div>
+}

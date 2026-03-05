@@ -27,4 +27,16 @@ public class AdminSensorController {
         sensorService.postSensor(sensor.name() , sensor.active());
         return ResponseEntity.status(HttpStatus.CREATED).body("Created Sensor");
     }
+
+    @PutMapping("/sensor")
+    public ResponseEntity<?> putSensor(@Valid @RequestBody InterfaceManage.UpdateSensor sensor){
+        sensorService.putSensor(sensor);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Updated Sensor");
+    }
+
+    @DeleteMapping("/sensor/{id}")
+    public ResponseEntity<?> deleteSensor(@PathVariable Integer id){
+        sensorService.deleteSensor(id);
+        return ResponseEntity.ok("deleted Sensor");
+    }
 }

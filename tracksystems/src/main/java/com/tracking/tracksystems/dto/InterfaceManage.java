@@ -108,4 +108,6 @@ public class InterfaceManage {
     public record SensorUpdate(String truckId , List<SensorReading> readings){}
 
     public record SensorReading(String SensorName , double Value){}
+
+    public record  UpdateSensor(Integer Id , Boolean active){}
 }

@@ -17,6 +17,8 @@ export class Register {
   isClosing = false;
   showMsg = signal("");
 
+  isLoading = false;
+
   constructor(private api: ApiComponent , private router : Router) { }
 
   register = new FormGroup(
@@ -72,6 +74,10 @@ export class Register {
       return;
     }
 
+    if(this.isLoading)return;
+
+    this.isLoading = true;
+
     const { employee_id, first_name, last_name, password, email, phone_number } =
       this.register.getRawValue();
 
@@ -91,22 +97,23 @@ export class Register {
         this.register.reset();  
         this.register.markAsPristine();
         this.register.markAsUntouched();
-        this.router.navigateByUrl('/login');
+        this.router.navigateByUrl('/waiting');
         console.log("Success:", res);
+        this.isLoading = false;
       },
 
       error: (err) => {
         console.error("Register error:", err);
-
         if (err.status === 409) {
-          this.showMsg.set("Username or Email already exists.");
+          this.showMsg.set(err.error?.error);
         } else if (err.status === 400) {
-          this.showMsg.set("Invalid data sent.");
+          this.showMsg.set(err.error?.error);
         } else {
           this.showMsg.set("Something went wrong.");
         }
 
         this.isClosing = false;
+        this.isLoading = false;
       }
     });
   }

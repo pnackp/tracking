@@ -30,4 +30,10 @@ public class AdminUserController {
     public ResponseEntity<?> putEmployee(@PathVariable String id , @Valid @RequestBody InterfaceManage.AdminUpdate payload) {
         return ResponseEntity.ok(userService.putUserById(id , payload));
     }
+
+    @DeleteMapping("employees/{id}")
+    public ResponseEntity<?> deleteEmployee(@PathVariable String id){
+        userService.deleteEmployee(id);
+        return ResponseEntity.ok("ok");
+    }
 }

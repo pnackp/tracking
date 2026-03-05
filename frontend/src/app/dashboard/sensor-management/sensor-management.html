@@ -1,54 +1,53 @@
-<div class="flex-1 pt-11 px-4 lg:p-6">
+<div class="flex-1 pt-11 px-4 lg:p-8 min-h-screen">
 
     <!-- Page Header -->
-    <div class="mb-6">
-        <h1 class="text-2xl font-bold text-gray-800">Sensor Manager</h1>
-        <p class="text-sm text-gray-500 mt-1">
-            Manage and monitor all connected sensors
+    <div class="mb-8">
+        <h1 class="text-3xl font-semibold text-gray-800 tracking-tight">
+            Sensor Management
+        </h1>
+        <p class="text-sm text-gray-500 mt-2">
+            Manage and Monitoring sensors
         </p>
     </div>
 
     <!-- Search + Add Button -->
     <div class="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between mb-6">
-
-        <!-- Search -->
-        <div class="relative w-full sm:max-w-xs">
-            <input type="text" placeholder="Search sensor..."
-                class="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white" />
-            <svg class="absolute left-3 top-2.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor"
-                stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M21 21l-4.3-4.3m1.3-5.7a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-        </div>
-
         <!-- Add Button -->
         <button (click)="SensorAdd()"
             class="w-full sm:w-auto px-4 py-2 bg-blue-600 text-white rounded-xl shadow hover:bg-blue-700 active:scale-95 transition">
             + Add Sensor
         </button>
-
     </div>
 
+    @if(!isLoading()){
     <!-- Sensor List -->
     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
 
-        <!-- Sensor Card -->
-        <!-- Sensor Card -->
+        @for (s of sensors(); track s.idSensor) {
+
         <div class="group bg-white rounded-3xl shadow-sm border border-gray-100 p-5 
-            hover:shadow-lg hover:-translate-y-1 transition duration-300">
+      hover:shadow-lg hover:-translate-y-1 transition duration-300">
 
             <!-- Top -->
             <div class="flex justify-between items-start">
 
                 <div>
                     <h2 class="font-semibold text-lg text-gray-800 group-hover:text-blue-600 transition">
-                        Temperature Sensor
+                        {{ s.sensorName }}
                     </h2>
+
                     <p class="text-xs text-gray-400 mt-1">
-                        Sensor ID: #001
+                        Sensor ID: #{{ s.idSensor }}
                     </p>
                 </div>
+
+                <!-- Status Badge -->
+                <span class="text-xs px-3 py-1 rounded-full" [ngClass]="s.active 
+              ? 'bg-green-100 text-green-600' 
+              : 'bg-gray-100 text-gray-500'">
+
+                    {{ s.active ? 'Active' : 'Inactive' }}
+                </span>
             </div>
 
             <!-- Divider -->
@@ -56,35 +55,42 @@
 
             <!-- Body -->
             <div class="text-sm text-gray-600 space-y-2">
-                <div class="flex justify-between">
-                    <span class="text-gray-400">Name</span>
-                    <span class="font-medium text-gray-700">Room Sensor A</span>
-                </div>
 
                 <div class="flex justify-between">
                     <span class="text-gray-400">Created At</span>
-                    <span class="font-medium text-gray-700">2 mins ago</span>
+                    <span class="font-medium text-gray-700">
+                        {{ s.createdAt | date:'medium' }}
+                    </span>
                 </div>
+
             </div>
 
             <!-- Buttons -->
-            <div class="mt-5 flex gap-3">
+            <div class="mt-5 flex items-center justify-between gap-3">
 
-                <button class="flex-1 text-sm py-2.5 rounded-xl border border-red-200 text-red-600
-             hover:bg-red-50 active:scale-95 transition">
+                <!-- Delete -->
+                <button class="text-sm px-4 py-2.5 rounded-xl border border-red-200 text-red-600
+        hover:bg-red-50 active:scale-95 transition" (click)="ConfirmDelete(s)">
                     Delete
                 </button>
 
-                <button class="flex-1 text-sm py-2.5 rounded-xl bg-blue-600 text-white
-             hover:bg-blue-700 active:scale-95 shadow-sm transition">
-                    Edit
-                </button>
-
+                <!-- Toggle Switch -->
+                <label class="relative inline-flex items-center cursor-pointer text-gray-900 gap-3">
+                    <input type="checkbox" class="sr-only peer" [checked]="s.active" (change)="ChangeStatus(s)" />
+                    <div
+                        class="w-16 h-8 bg-slate-300 rounded-full peer peer-checked:bg-blue-600 transition-colors duration-200">
+                    </div>
+                    <span
+                        class="dot absolute left-1 top-1 w-6 h-6 bg-white rounded-full transition-transform duration-200 ease-in-out peer-checked:translate-x-8"></span>
+                    {{ s.active ? 'Active' : 'Inactive' }}
+                </label>
             </div>
 
         </div>
-    </div>
 
+        }
+    </div>
+    }
 </div>
 
 @if(addSensor()){
@@ -129,8 +135,8 @@
             <!-- Buttons -->
             <div class="mt-6 flex flex-col sm:flex-row gap-3 sm:justify-end">
 
-                <button class="w-full sm:w-auto px-5 py-2.5 rounded-xl border border-gray-200
-               text-gray-600 hover:bg-gray-100 transition">
+                <button type="button" (click)="CancelAdd()" class="w-full sm:w-auto px-5 py-2.5 rounded-xl border border-gray-200
+         text-gray-600 hover:bg-gray-100 transition">
                     Cancel
                 </button>
 
@@ -142,6 +148,49 @@
             </div>
         </form>
 
+    </div>
+</div>
+}
+
+@if(confirmDelete()){
+<div class="fixed inset-0 bg-black/40 backdrop-blur-sm 
+            flex items-center justify-center z-50
+            animate-fadeIn">
+
+    <div class="flex flex-col items-center bg-white shadow-lg 
+              rounded-2xl py-6 px-5 w-95
+              border border-gray-200
+              animate-scaleIn">
+
+        <div class="flex items-center justify-center p-4 bg-red-100 rounded-full">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                    d="M2.875 5.75h1.917m0 0h15.333m-15.333 0v13.417a1.917 1.917 0 0 0 1.916 1.916h9.584a1.917 1.917 0 0 0 1.916-1.916V5.75m-10.541 0V3.833a1.917 1.917 0 0 1 1.916-1.916h3.834a1.917 1.917 0 0 1 1.916 1.916V5.75m-5.75 4.792v5.75m3.834-5.75v5.75"
+                    stroke="#DC2626" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+        </div>
+
+        <h2 class="text-gray-900 font-semibold mt-4 text-xl">
+            Delete {{ selectedSensor()?.sensorName }} ?
+        </h2>
+
+        <p class="text-sm text-gray-600 mt-2 text-center">
+            Are you sure to delete sensor , It's would be effect to store logs.
+        </p>
+
+        <div class="flex items-center justify-center gap-4 mt-5 w-full">
+            <button type="button" class="w-full h-10 rounded-md border border-gray-300 bg-white
+                   text-gray-600 font-medium text-sm
+                   hover:bg-gray-100 active:scale-95 transition" (click)="CancelConfirm()">
+                Cancel
+            </button>
+
+            <button type="button" class="w-full h-10 rounded-md text-white bg-red-600
+                   font-medium text-sm
+                   hover:bg-red-700 active:scale-95 transition" (click)="RequestDelete()">
+                Confirm
+            </button>
+        </div>
     </div>
 </div>
 }

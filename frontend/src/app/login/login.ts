@@ -45,9 +45,8 @@ export class Login {
       error: (err) => {
 
         let message = "Invalid or Waiting for Admin verify";
-
-        if (err.status === 401 && err.error?.message) {
-          message = err.error.message;
+        if (err.status === 401 && err.error?.error) {
+          message = err.error.error;
         }
 
         this.showMsg.set(message);
