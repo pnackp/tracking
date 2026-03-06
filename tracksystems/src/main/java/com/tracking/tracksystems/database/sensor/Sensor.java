@@ -12,7 +12,7 @@ public class Sensor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_sensor")
-    private Integer idSensor;
+    private Long idSensor;
 
     @Column(name = "sensor_name", nullable = false, length = 100)
     private String sensorName;

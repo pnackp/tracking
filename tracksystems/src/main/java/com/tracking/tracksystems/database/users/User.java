@@ -30,7 +30,7 @@ public class User {
     private LocalDateTime createdAt;
 
     @JsonIgnore
-    @Column(name = "password", length = 255, nullable = false)
+    @Column(name = "password_hash", length = 255, nullable = false)
     private String password;
 
     @Column(name = "phone", length = 20, nullable = false)

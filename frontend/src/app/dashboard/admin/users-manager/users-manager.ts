@@ -1,9 +1,9 @@
 import { Component, OnInit, signal } from '@angular/core';
-import { ApiComponent } from '../../api.component';
-import { Employee } from '../../app.dto';
+import { ApiComponent } from '../../../api.component';
+import { Employee } from '../../../app.dto';
 import { DatePipe, NgClass, TitleCasePipe } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { EmployeeUpdateAdmin } from '../../app.dto';
+import { EmployeeUpdateAdmin } from '../../../app.dto';
 
 @Component({
   selector: 'app-users-manager',

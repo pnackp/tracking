@@ -1,7 +1,5 @@
 package com.tracking.tracksystems.database.logs;
 
-import com.tracking.tracksystems.database.sensor.Sensor;
-import com.tracking.tracksystems.database.trucks.Trucks;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -14,28 +12,17 @@ public class Logs {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_log")
-    private Integer idLog;
+    private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "truck_id", nullable = false)
-    private Trucks truck;
+    @Column(name = "truck_id", nullable = false)
+    private Long truckId;
 
-    @ManyToOne
-    @JoinColumn(name = "sensor_id", nullable = false)
-    private Sensor sensor;
+    @Column(name = "sensor_id")
+    private Long sensorId;
 
-    @Column(nullable = false)
+    @Column(name = "value")
     private Double value;
 
-    @Column(name = "created_at", updatable = false, insertable = false)
+    @Column(name = "created_at" , updatable = false , insertable = false )
     private LocalDateTime createdAt;
-
-    public Logs() {}
-
-    public Logs(Trucks truck, Sensor sensor, Double value) {
-        this.truck = truck;
-        this.sensor = sensor;
-        this.value = value;
-    }
 }

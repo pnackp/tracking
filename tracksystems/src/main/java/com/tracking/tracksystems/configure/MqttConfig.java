@@ -2,10 +2,10 @@ package com.tracking.tracksystems.configure;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tracking.tracksystems.database.logs.Logs;
-import com.tracking.tracksystems.database.logs.LogsRepo;
+import com.tracking.tracksystems.database.logs.LogsRepository;
 import com.tracking.tracksystems.database.sensor.SensorRepo;
 import com.tracking.tracksystems.database.trucks.Trucks;
-import com.tracking.tracksystems.database.trucks.TrucksRepo;
+import com.tracking.tracksystems.database.trucks.TrucksRepository;
 import com.tracking.tracksystems.dto.InterfaceManage;
 import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
@@ -37,19 +37,19 @@ public class MqttConfig {
     private String topic;
 
     private final SensorRepo sensorRepo;
-    private final TrucksRepo trucksRepo;
-    private final LogsRepo logsRepo;
+    private final TrucksRepository  trucksRepo;
     private final MyWebSocketHandler myWebSocketHandler;
+    private final LogsRepository logsRepository;
 
     private MqttClient mqttClient;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public MqttConfig(SensorRepo sensorRepo, TrucksRepo trucksRepo, LogsRepo logsRepo, MyWebSocketHandler myWebSocketHandler) {
+    public MqttConfig(SensorRepo sensorRepo, TrucksRepository trucksRepo, MyWebSocketHandler myWebSocketHandler, LogsRepository logsRepository) {
         this.sensorRepo = sensorRepo;
         this.trucksRepo = trucksRepo;
-        this.logsRepo = logsRepo;
         this.myWebSocketHandler = myWebSocketHandler;
+        this.logsRepository = logsRepository;
     }
 
     @PostConstruct
@@ -75,17 +75,22 @@ public class MqttConfig {
                         String payload = new String(message.getPayload());
                         InterfaceManage.SensorUpdate update = objectMapper.readValue(payload, InterfaceManage.SensorUpdate.class);
 
-                        Optional<Trucks> trucksOpt = trucksRepo.findById(update.truckId());
+                        Optional<Trucks> trucksOpt = trucksRepo.findByTruckCode(update.TruckCode());
                         if (trucksOpt.isEmpty()) {
-                            System.out.println("trucks not found :" + update.truckId());
+                            System.out.println("trucks not found :" + update.TruckCode());
                             return;
                         }
 
                         Trucks trucks = trucksOpt.get();
+
                         for (InterfaceManage.SensorReading reading : update.readings()) {
-                            sensorRepo.findBySensorName(reading.SensorName()).ifPresent(sensor -> {
-                                Logs log = new Logs(trucks, sensor, reading.Value());
-                                logsRepo.save(log);
+                            sensorRepo.findBySensorName(reading.SensorName()).ifPresent(sensor ->
+                            {
+                                Logs log = new Logs();
+                                log.setSensorId(sensor.getIdSensor());
+                                log.setTruckId(trucks.getId());
+                                log.setValue(reading.Value());
+                                logsRepository.save(log);
                             });
                         }
 

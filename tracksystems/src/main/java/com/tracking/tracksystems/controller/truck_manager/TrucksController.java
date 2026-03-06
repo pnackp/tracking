@@ -1,8 +1,8 @@
 package com.tracking.tracksystems.controller.truck_manager;
 
+
+import com.tracking.tracksystems.database.trucks.Trucks;
 import com.tracking.tracksystems.dto.InterfaceManage;
-import com.tracking.tracksystems.service.AssignmentService;
-import com.tracking.tracksystems.service.LogsService;
 import com.tracking.tracksystems.service.TruckService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -13,50 +13,47 @@ import org.springframework.web.bind.annotation.*;
 public class TrucksController {
 
     private final TruckService truckService;
-    private final AssignmentService  assignmentService;
-    private final LogsService logsService;
 
-
-    public TrucksController(TruckService truckService, AssignmentService assignmentService, LogsService logsService) {
+    public TrucksController(TruckService truckService) {
         this.truckService = truckService;
-        this.assignmentService = assignmentService;
-        this.logsService = logsService;
     }
 
     @GetMapping("/trucks")
-    public ResponseEntity<?> getTrucks() {
-        return ResponseEntity.ok(truckService.getTruck());
-    }
-
-    @GetMapping("/trucks/{id}")
-    public ResponseEntity<?> getTruck(@PathVariable String id) {
-        return ResponseEntity.ok(truckService.getTruckById(id));
+    public ResponseEntity<?> getTrucks(){
+        return ResponseEntity.ok(truckService.getTrucks());
     }
 
     @PostMapping("/trucks")
-    public ResponseEntity<?> postTrucks(@Valid @RequestBody InterfaceManage.TruckCreate payload) {
-        truckService.createTruck(payload);
-        return ResponseEntity.ok(new InterfaceManage.response("created successfully"));
+    public ResponseEntity<?> addTruck(@Valid @RequestBody InterfaceManage.TrucksCreate trucks){
+        truckService.postTruck(trucks);
+        return ResponseEntity.ok("Created truck");
     }
 
-    @PutMapping("/trucks/{id}")
-    public ResponseEntity<?> putTrucks(@PathVariable String id , @Valid @RequestBody InterfaceManage.TruckUpdate payload){
-        truckService.updateTruck(id , payload);
-        return ResponseEntity.ok(new InterfaceManage.response("updated successfully"));
+    @DeleteMapping("/trucks/{code}")
+    public ResponseEntity<?> deleteTruck(@PathVariable String code){
+        truckService.deleteTruck(code);
+        return ResponseEntity.ok("Deleted truck");
     }
 
-    @GetMapping("/assignments/truck/{truck_id}")
-    public ResponseEntity<?> getAssign(@PathVariable String truck_id){
-        return ResponseEntity.ok(assignmentService.getAssignById(truck_id));
+    @PutMapping("/trucks/{code}")
+    public ResponseEntity<?> putTruck(@PathVariable String code , @Valid @RequestBody InterfaceManage.TruckUpdate trucks){
+        truckService.putTruck(code , trucks);
+        return ResponseEntity.ok("Updated truck");
     }
 
-    @GetMapping("/logs")
-    public ResponseEntity<?> getLogs() {
-        return ResponseEntity.ok(logsService.getAllLogs());
+    @GetMapping("/trucks/logs/{code}")
+    public ResponseEntity<?> getTruckLogs(@PathVariable Long code){
+        return ResponseEntity.ok(truckService.getLogs(code));
     }
 
-    @GetMapping("/logs/trucks/{id}")
-    public ResponseEntity<?> getLogsById(@PathVariable String id) {
-        return ResponseEntity.ok(logsService.getById(id));
+    @PutMapping("/trucks/{code}/maintenance")
+    public ResponseEntity<?> updateTruck(@PathVariable String code , @Valid @RequestBody InterfaceManage.Maintenance trucks){
+        truckService.postMaintenance(code, trucks);
+        return ResponseEntity.ok("Updated maintenance");
+    }
+
+    @GetMapping("/trucks/{code}/maintenance")
+    public ResponseEntity<?> getTruckMaintenance(@PathVariable Long code){
+        return ResponseEntity.ok(truckService.getTruckMaintenance(code));
     }
 }

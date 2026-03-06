@@ -1,8 +1,8 @@
 import { Component, signal, OnInit, Signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ApiComponent } from '../../api.component';
+import { ApiComponent } from '../../../api.component';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { SensorRequest, Sensor, SensorUpdate } from '../../app.dto';
+import { SensorRequest, Sensor, SensorUpdate } from '../../../app.dto';
 
 @Component({
   selector: 'app-sensor-management',

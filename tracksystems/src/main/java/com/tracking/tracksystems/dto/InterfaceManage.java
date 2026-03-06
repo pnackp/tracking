@@ -1,10 +1,8 @@
 package com.tracking.tracksystems.dto;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class InterfaceManage {
@@ -77,37 +75,100 @@ public class InterfaceManage {
 
     ) { }
 
-    public record TruckCreate(
-            @NotBlank(message = "Missing truck_id")
-            String truck_id,
-            @NotBlank(message = "Missing plate_number")
-            String plate_number,
-            @NotBlank(message = "Missing product")
-            String product,
-            @NotBlank(message = "Missing fuel")
-            String fuel,
-            @NotBlank(message = "Missing weight_trucks")
-            String weight_trucks
-    ){}
-
-    public record TruckUpdate(
-            @NotBlank(message = "Missing product")
-            String product,
-            @NotBlank(message = "Missing fuel")
-            String fuel,
-            @NotBlank(message = "Missing weight_trucks")
-            String weight_trucks
-    ){}
-
     public record Sensor(
             @NotBlank(message = "Missing sensor name")
             String name,
             Boolean active
     ){}
 
-    public record SensorUpdate(String truckId , List<SensorReading> readings){}
+    public record SensorUpdate(String TruckCode , List<SensorReading> readings){}
 
     public record SensorReading(String SensorName , double Value){}
 
     public record  UpdateSensor(Integer Id , Boolean active){}
+
+    public record TrucksCreate(
+
+            @NotBlank(message = "Plate number is required")
+            String plateNumber,
+
+            @NotBlank(message = "VIN is required")
+            String vin,
+
+            @NotBlank(message = "Brand is required")
+            String brand,
+
+            @NotBlank(message = "Model is required")
+            String model,
+
+            @NotNull(message = "Year is required")
+            Integer year,
+
+            @NotBlank(message = "Truck type is required")
+            String truck_truck_type,
+
+            @NotNull(message = "Max weight is required")
+            @PositiveOrZero(message = "Max weight must be >= 0")
+            BigDecimal max_weight,
+
+            @NotBlank(message = "Status is required")
+            String status,
+
+            @NotNull(message = "Active flag is required")
+            Boolean is_active
+
+    ) {}
+
+    public record TruckUpdate(
+            @NotBlank(message = "Plate number is required")
+            String plateNumber,
+
+            @NotBlank(message = "Status is required")
+            String status,
+
+            @NotNull(message = "Active flag is required")
+            Boolean is_active
+    ){ }
+
+    public record LocationCreate(
+
+            @NotBlank(message = "Location name is required")
+            @Size(max = 50, message = "Location name must not exceed 50 characters")
+            String name,
+
+            @NotBlank(message = "Province is required")
+            @Size(max = 50, message = "Province must not exceed 50 characters")
+            String province,
+
+            @NotNull(message = "Latitude is required")
+            Double latitude,
+
+            @NotNull(message = "Longitude is required")
+            Double longitude
+
+    ) {}
+
+    public record Maintenance(
+            @NotBlank(message = "Required Description")
+            String Description ,
+            @NotNull(message = "Cost is required")
+            @PositiveOrZero(message = "Cost must be >= 0")
+            BigDecimal cost
+    ){}
+
+    public record AssignmentCreate(
+
+            @NotNull(message = "Truck Code is required")
+            String truckCode,
+
+            @NotBlank(message = "Product is required")
+            @Size(max = 50, message = "Product must not exceed 50 characters")
+            String product,
+
+            @NotNull(message = "Start location is required")
+            Long startLocation,
+
+            @NotNull(message = "End location is required")
+            Long endLocation
+    ) {}
 }

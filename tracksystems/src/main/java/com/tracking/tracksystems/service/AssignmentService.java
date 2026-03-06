@@ -1,17 +1,21 @@
 package com.tracking.tracksystems.service;
 
-import com.tracking.tracksystems.database.assignments.TruckAssignment;
-import com.tracking.tracksystems.database.assignments.TruckAssignmentRepo;
-import com.tracking.tracksystems.database.trucks.Trucks;
-import com.tracking.tracksystems.database.trucks.TrucksRepo;
+import com.tracking.tracksystems.database.assignments.Assignments;
+import com.tracking.tracksystems.database.assignments.AssignmentsRepository;
+import com.tracking.tracksystems.database.locations.LocationRepository;
+import com.tracking.tracksystems.database.locations.Locations;
+import com.tracking.tracksystems.database.trucks.TrucksRepository;
 import com.tracking.tracksystems.database.users.User;
 import com.tracking.tracksystems.database.users.UsersRepo;
+import com.tracking.tracksystems.dto.InterfaceManage;
+import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -19,59 +23,126 @@ import java.util.stream.Collectors;
 @Service
 public class AssignmentService {
 
+    private final AssignmentsRepository assignmentsRepository;
+    private final TrucksRepository trucksRepository;
+    private final LocationRepository locationRepository;
     private final UsersRepo usersRepo;
-    private final TrucksRepo trucksRepo;
-    private final TruckAssignmentRepo truckAssignmentRepo;
 
-    public AssignmentService(UsersRepo usersRepo, TrucksRepo truck, TruckAssignmentRepo truckAssignment) {
+    public AssignmentService(
+            AssignmentsRepository assignmentsRepository,
+            TrucksRepository trucksRepository,
+            LocationRepository locationRepository,
+            UsersRepo usersRepo
+    ) {
+        this.assignmentsRepository = assignmentsRepository;
+        this.trucksRepository = trucksRepository;
+        this.locationRepository = locationRepository;
         this.usersRepo = usersRepo;
-        trucksRepo = truck;
-        truckAssignmentRepo = truckAssignment;
     }
 
-    public void newAssignment(String TruckId , String id) {
-        User user = usersRepo.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND , "User not found"));
-        Trucks truck = trucksRepo.findById(TruckId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND , "Truck not found"));
-
-        if (truckAssignmentRepo.findByDriverAndEndDateIsNull(user).isPresent()) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Driver already assigned to another truck");
-        }
-
-        if (truckAssignmentRepo.findByTruckAndEndDateIsNull(truck).isPresent()) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Truck already assigned to another driver");
-        }
-
-        TruckAssignment assignment = new TruckAssignment();
-        assignment.setDriver(user);
-        assignment.setTruck(truck);
-
-        truckAssignmentRepo.save(assignment);
+    public List<Assignments> getAssignments() {
+        return assignmentsRepository.findAll();
     }
 
-    public List<Trucks> getTruckFree() {
+    @Transactional
+    public void postAssignment(InterfaceManage.AssignmentCreate assignments, String name) {
 
-        List<TruckAssignment> activeAssignments = truckAssignmentRepo.findAllByEndDateIsNull();
+        User user = usersRepo.findById(name)
+                .orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
-        Set<String> busyTruckIds = activeAssignments.stream().map(a -> a.getTruck().getIdTruck()).collect(Collectors.toSet());
+        trucksRepository.findByTruckCode(assignments.truckCode())
+                .ifPresentOrElse(truck -> {
 
-        List<Trucks> allTrucks = trucksRepo.findAll();
-        return allTrucks.stream().filter(truck -> !busyTruckIds.contains(truck.getIdTruck())).toList();
+                    assignmentsRepository.findByTruckIdAndEndTimeIsNull(truck.getId())
+                            .ifPresentOrElse(existing -> {
+                                throw new ResponseStatusException(
+                                        HttpStatus.BAD_REQUEST,
+                                        "Assignment already exists");
+                            }, () -> {
+
+                                Locations startLocation = locationRepository
+                                        .findById(assignments.startLocation())
+                                        .orElseThrow(() ->
+                                                new ResponseStatusException(
+                                                        HttpStatus.BAD_REQUEST,
+                                                        "Start location not found"));
+
+                                Locations endLocation = locationRepository
+                                        .findById(assignments.endLocation())
+                                        .orElseThrow(() ->
+                                                new ResponseStatusException(
+                                                        HttpStatus.BAD_REQUEST,
+                                                        "End location not found"));
+
+                                Assignments assignment = new Assignments();
+                                assignment.setTruckId(truck.getId());
+                                assignment.setProduct(assignments.product());
+                                assignment.setStartLocation(startLocation.getId());
+                                assignment.setEndLocation(endLocation.getId());
+                                assignment.setCreatedBy(user.getEmployeeId());
+
+                                assignmentsRepository.save(assignment);
+                            });
+
+                }, () -> {
+                    throw new ResponseStatusException(
+                            HttpStatus.BAD_REQUEST,
+                            "Invalid truck code");
+                });
+    }
+
+    @Transactional
+    public void cancelAssignment(Long truckId , String id) {
+
+        Assignments assignment = assignmentsRepository
+                .findByTruckIdAndEndTimeIsNull(truckId)
+                .orElseThrow(() ->
+                        new ResponseStatusException(
+                                HttpStatus.BAD_REQUEST,
+                                "Active assignment not found"));
+
+        assignment.setEndTime(LocalDateTime.now());
+        if(assignment.getStartTime() == null) {
+            assignment.setStartTime(LocalDateTime.now());
+        }
+        if(assignment.getDriverId() == null) {
+            assignment.setDriverId(id);
+        }
+        assignmentsRepository.save(assignment);
+    }
+
+    public List<Assignments> getFreeAssignments(){
+        return assignmentsRepository.findByDriverIdIsNullAndStartTimeIsNull();
+    }
+    //fix here tmr
+    @Transactional
+    public void takeAssignment(Long truckId , String id){
+
+        usersRepo.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "User not found"
+                ));
+
+        Assignments assignment = assignmentsRepository
+                .findByTruckIdAndEndTimeIsNull(truckId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Assignment not found"
+                ));
+
+        assignment.setDriverId(id);
+        assignment.setStartTime(LocalDateTime.now());
     }
 
     public void endAssignment(String id){
-        User user = usersRepo.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND , "User not found"));
-        TruckAssignment result = truckAssignmentRepo.findByDriverAndEndDateIsNull(user).orElseThrow(()->  new ResponseStatusException(HttpStatus.NOT_FOUND,"Assign not found"));
-        result.setEndDate(LocalDateTime.now());
-        truckAssignmentRepo.save(result);
-    }
-
-    public List<TruckAssignment> getAllMyAssign(String id){
-        User user = usersRepo.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND , "User not found"));
-        return truckAssignmentRepo.findByDriver(user);
-    }
-
-    public List<TruckAssignment> getAssignById(String truck_id){
-        Trucks truck = trucksRepo.findById(truck_id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND , "Truck not found"));
-        return truckAssignmentRepo.findByTruck(truck);
+        assignmentsRepository.findByDriverIdAndEndTimeIsNull(id).ifPresent(
+                assignment -> {
+                    assignment.setEndTime(LocalDateTime.now());
+                    assignmentsRepository.save(assignment);
+                }
+        );
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Assignment not found");
     }
 }

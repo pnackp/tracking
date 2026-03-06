@@ -3,10 +3,11 @@ import { Login } from './login/login';
 import { Register } from './register/register';
 import { Notfoundpage } from './notfoundpage/notfoundpage';
 import { Dashboard } from './dashboard/dashboard';
-import { SensorManagementComponent } from './dashboard/sensor-management/sensor-management';
+import { SensorManagementComponent } from './dashboard/admin/sensor-management/sensor-management';
 import { VerifyComponent } from './verify-component/verify-component';
 import { WaitingVerify } from './waiting-verify/waiting-verify';
-import { UsersManager } from './dashboard/users-manager/users-manager';
+import { UsersManager } from './dashboard/admin/users-manager/users-manager';
+import { Truck } from './dashboard/driver/truck/truck';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -32,6 +33,10 @@ export const routes: Routes = [
       {
         path: 'usersmanage',
         component : UsersManager
+      },
+      {
+        path: 'truck',
+        component : Truck
       }
     ]
   },
