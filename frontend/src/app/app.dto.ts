@@ -45,3 +45,31 @@ export interface EmployeeUpdateAdmin{
   is_active : boolean,
   role : string
 }
+
+export interface AssignmentDTO {
+  id: number;
+  product: string;
+
+  truckId: number;
+  driverId: number | null;
+
+  startLocation: number;
+  endLocation: number;
+
+  startTime: Date | null;
+  endTime: Date | null;
+
+  createdBy: string;
+  createdAt: Date;
+}
+
+export interface LocationDTO {
+  id: number;
+  name: string;
+  province: string;
+
+  latitude: number;
+  longitude: number;
+
+  createdAt: Date;
+}

@@ -3,6 +3,7 @@ package com.tracking.tracksystems.service;
 import com.tracking.tracksystems.database.users.User;
 import com.tracking.tracksystems.database.users.UsersRepo;
 import com.tracking.tracksystems.dto.InterfaceManage;
+import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -44,6 +45,7 @@ public class AuthService {
         return user;
     }
 
+    @Transactional
     public void register(InterfaceManage.Register payload) {
         if (usersRepo.findByEmployeeIdOrEmail(payload.employee_id(), payload.email()).isPresent() || usersRepo.findByPhone(payload.phone_number()).isPresent()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "already registered");
@@ -53,6 +55,7 @@ public class AuthService {
         emailService.sendVerificationEmail(user.getEmail() , jwtService.generateToken(user.getEmployeeId() , "user" , 3600));
     }
 
+    @Transactional
     public void verifyEmail(String token) {
 
         String status = jwtService.validateToken(token);

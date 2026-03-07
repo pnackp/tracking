@@ -15,10 +15,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 
 @Service
 public class AssignmentService {
@@ -136,13 +132,16 @@ public class AssignmentService {
         assignment.setStartTime(LocalDateTime.now());
     }
 
+    @Transactional
     public void endAssignment(String id){
-        assignmentsRepository.findByDriverIdAndEndTimeIsNull(id).ifPresent(
-                assignment -> {
-                    assignment.setEndTime(LocalDateTime.now());
-                    assignmentsRepository.save(assignment);
-                }
-        );
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Assignment not found");
+
+        Assignments assignment = assignmentsRepository
+                .findByDriverIdAndEndTimeIsNull(id)
+                .orElseThrow(() ->
+                        new ResponseStatusException(
+                                HttpStatus.NOT_FOUND,
+                                "Assignment not found"));
+
+        assignment.setEndTime(LocalDateTime.now());
     }
 }

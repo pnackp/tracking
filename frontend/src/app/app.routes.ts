@@ -7,7 +7,7 @@ import { SensorManagementComponent } from './dashboard/admin/sensor-management/s
 import { VerifyComponent } from './verify-component/verify-component';
 import { WaitingVerify } from './waiting-verify/waiting-verify';
 import { UsersManager } from './dashboard/admin/users-manager/users-manager';
-import { Truck } from './dashboard/driver/truck/truck';
+import { Assignment } from './dashboard/driver/assignment/assignment';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -35,8 +35,8 @@ export const routes: Routes = [
         component : UsersManager
       },
       {
-        path: 'truck',
-        component : Truck
+        path: 'assignment',
+        component : Assignment
       }
     ]
   },

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { LoginPayload, RegisterRequest, SensorRequest , Sensor , SensorUpdate , Employee, EmployeeUpdateAdmin} from './app.dto';
+import { LoginPayload, RegisterRequest, SensorRequest , Sensor , SensorUpdate , Employee, EmployeeUpdateAdmin, AssignmentDTO, LocationDTO} from './app.dto';
 
 @Injectable({ providedIn: 'root' })
 export class ApiComponent {
@@ -48,5 +48,13 @@ export class ApiComponent {
 
     DeleteEmployees(id : number){
         return this.http.delete(`http://localhost:8080/api/admin/employees/${id}`,{withCredentials : true , responseType: 'text'})
+    }
+
+    GetFreeAssignments(){
+        return this.http.get<AssignmentDTO[]>("http://localhost:8080/api/driver/assignment" , {withCredentials : true })
+    }
+
+    GetLocations(){
+        return this.http.get<LocationDTO[]>("http://localhost:8080/api/driver/locations" , {withCredentials : true })
     }
 }

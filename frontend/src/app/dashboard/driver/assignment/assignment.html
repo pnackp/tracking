@@ -1,0 +1,98 @@
+<div class="flex-1 pt-11 px-4 lg:p-8">
+
+    <!-- Header -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-semibold text-gray-800 tracking-tight">
+            Available Assignments
+        </h1>
+        <p class="text-sm text-gray-500 mt-2">
+            View and take available assignments
+        </p>
+    </div>
+
+    <!-- Assignment Cards -->
+    <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+
+        @for (assignment of assignments(); track assignment.id) {
+
+        <div
+            class="group bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl transition duration-300 overflow-hidden flex flex-col">
+
+            <!-- Map (ยังไม่ทำ logic) -->
+            <div class="h-44 w-full overflow-hidden">
+                <div class="w-full h-full bg-gray-200 flex items-center justify-center text-sm text-gray-400">
+                    Map
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="p-6 flex flex-col flex-1">
+
+                <!-- Header -->
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h2 class="text-lg font-semibold text-gray-800">
+                            Product: {{ assignment.product }}
+                        </h2>
+                        <p class="text-xs text-gray-400 mt-1">
+                            Assignment #{{ assignment.id }}
+                        </p>
+                    </div>
+
+                    <span class="text-xs px-3 py-1 rounded-full bg-green-100 text-green-700 font-medium">
+                        Active
+                    </span>
+                </div>
+
+                <div class="border-t border-gray-100 my-5"></div>
+
+                <!-- Info -->
+                <div class="space-y-3 text-sm flex-1">
+
+                    <div class="flex justify-between">
+                        <span class="text-gray-400">Driver</span>
+                        <span class="font-medium text-gray-700">
+                            {{ assignment.driverId ?? 'Not Assigned' }}
+                        </span>
+                    </div>
+
+                    <div class="flex justify-between">
+                        <span class="text-gray-400">Start</span>
+                        <span class="font-medium text-gray-700">
+                            {{ getLocationName(assignment.startLocation) }}
+                        </span>
+                    </div>
+
+                    <div class="flex justify-between">
+                        <span class="text-gray-400">End</span>
+                        <span class="font-medium text-gray-700">
+                            {{ getLocationName(assignment.endLocation) }}
+                        </span>
+                    </div>
+
+                </div>
+
+                <!-- Footer -->
+                <div class="flex gap-3 mt-6">
+
+                    <button
+                        class="flex-1 text-sm px-4 py-2.5 rounded-lg border border-red-200 text-red-600 hover:bg-red-50 transition">
+                        Cancel
+                    </button>
+
+                    <button
+                        class="flex-1 text-sm px-4 py-2.5 rounded-lg bg-linear-to-r from-blue-600 to-indigo-600 text-white font-medium hover:from-blue-700 hover:to-indigo-700 transition shadow-sm">
+                        Track
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        }
+
+    </div>
+
+</div>
